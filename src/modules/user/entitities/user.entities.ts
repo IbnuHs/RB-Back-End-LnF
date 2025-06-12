@@ -5,7 +5,7 @@ enum userRole {
   USER = 'User',
 }
 
-enum statusJabatan {
+export enum statusJabatan {
   PEGAWAI = 'Pegawai',
   MAHASISWA = 'Mahasiswa',
   TAMU = 'Tamu',
@@ -13,7 +13,7 @@ enum statusJabatan {
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -28,6 +28,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: userRole,
+    default: userRole.USER,
   })
   role: userRole;
 

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExampleModule } from './example/example.module';
 import { User } from './modules/user/entitities/user.entities';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { User } from './modules/user/entitities/user.entities';
       autoLoadEntities: true,
     }),
     ExampleModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
