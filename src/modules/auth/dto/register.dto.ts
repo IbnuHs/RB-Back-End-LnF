@@ -6,9 +6,9 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { statusJabatan } from '../entitities/user.entities';
+import { statusJabatan } from '../../user/entitities/user.entities';
 
-export class userDTO {
+export class registerDTO {
   @IsEmail()
   email: string;
 
