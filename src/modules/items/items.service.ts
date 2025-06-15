@@ -18,4 +18,6 @@ export class ItemService {
       throw new InternalServerErrorException(error.message);
     }
   }
+
+  async editItem() {}
 }

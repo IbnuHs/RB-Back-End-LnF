@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ItemsModule } from './modules/items/items.module';
 import { CategoryModule } from './modules/category/category.module';
+import { LocationModule } from './modules/location/location.module';
 
 @Module({
   imports: [
@@ -17,7 +18,6 @@ import { CategoryModule } from './modules/category/category.module';
       username: 'root',
       password: '',
       database: 'lostnfound',
-      entities: [User],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -28,6 +28,7 @@ import { CategoryModule } from './modules/category/category.module';
     AuthModule,
     ItemsModule,
     CategoryModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

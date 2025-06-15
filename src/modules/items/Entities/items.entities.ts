@@ -1,4 +1,5 @@
 import { Categories } from 'src/modules/category/entities/category.entitites';
+import { Location } from 'src/modules/location/entitites/location.entities';
 import { User } from 'src/modules/user/entitities/user.entities';
 import {
   Column,
@@ -25,4 +26,7 @@ export class Item {
 
   @OneToMany(() => User, (user) => user.id)
   user: User;
+
+  @ManyToOne(() => Location, (location) => location.id)
+  location: Location;
 }
