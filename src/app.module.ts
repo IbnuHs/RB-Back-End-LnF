@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ExampleModule } from './example/example.module';
 import { User } from './modules/user/entitities/user.entities';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { ItemsModule } from './modules/items/items.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -23,9 +24,10 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ExampleModule,
     UserModule,
     AuthModule,
+    ItemsModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

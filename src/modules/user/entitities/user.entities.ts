@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Item } from 'src/modules/items/Entities/items.entities';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 enum userRole {
   ADMIN = 'Admin',
@@ -37,4 +38,7 @@ export class User {
     enum: statusJabatan,
   })
   statusJabatan: statusJabatan;
+
+  @ManyToOne(() => Item, (item) => item.id)
+  item: Item[];
 }
