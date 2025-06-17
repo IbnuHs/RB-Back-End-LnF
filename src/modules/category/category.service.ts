@@ -9,7 +9,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { EditCategoryDTO } from './dto/edit.category.dto';
-import { throwError } from 'rxjs';
 
 export class CategoryService {
   constructor(
@@ -90,7 +89,7 @@ export class CategoryService {
       if (!kategori) {
         throw new NotFoundException('Kategori Tidak Ditemukan');
       }
-      await this.category.softDelete(id);
+      await this.category.delete({ id });
       return {
         message: 'Kategori Berhasil Dihapus',
         status: 200,

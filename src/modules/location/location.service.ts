@@ -63,9 +63,7 @@ export class LocationService {
         },
       });
       if (!location)
-        throw new NotFoundException(
-          `Lokasi dengan id ${dto.location} Tidak ada`,
-        );
+        throw new NotFoundException(`Lokasi dengan id ${id} Tidak ada`);
       location.location = dto.location;
       await this.location.save(location);
       return {

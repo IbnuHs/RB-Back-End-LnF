@@ -33,7 +33,7 @@ export class CategoryController {
     return this.categoryService.editCategory(dto, id);
   }
 
-  @Delete()
+  @Delete(':id')
   deleteCategory(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.deleteCategory(id);
   }

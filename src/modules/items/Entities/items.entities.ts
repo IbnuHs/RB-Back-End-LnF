@@ -1,12 +1,11 @@
-import { IsEnum } from 'class-validator';
 import { Categories } from 'src/modules/category/entities/category.entitites';
 import { Location } from 'src/modules/location/entitites/location.entities';
-import { statusJabatan, User } from 'src/modules/user/entitities/user.entities';
+import { User } from 'src/modules/user/entitities/user.entities';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,6 +20,11 @@ export enum StatusLaporan {
   CLAIMED = 'CLAIMED',
 }
 
+export enum JenisLaporan {
+  KEHILANGAN = 'KEHILANGAN',
+  PENEMUAN = 'PENEMUAN',
+}
+
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn()
@@ -28,6 +32,11 @@ export class Item {
 
   @Column()
   itemName: String;
+
+  @Column({
+    type: 'text',
+  })
+  urlImage: string;
 
   @Column()
   itemDescription: String;
@@ -44,12 +53,23 @@ export class Item {
     enum: StatusLaporan,
     default: StatusLaporan.ACTIVE,
   })
+  statusLaporan: StatusLaporan;
+
+  @Column({
+    type: 'enum',
+    enum: JenisLaporan,
+  })
+  jenisLaporan: JenisLaporan;
+
   @ManyToOne(() => Categories, (category) => category.id)
+  @JoinColumn({ name: 'categoryId' })
   category: Categories;
 
-  @OneToMany(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @ManyToOne(() => Location, (location) => location.id)
+  @JoinColumn({ name: 'locationId' })
   location: Location;
 }
