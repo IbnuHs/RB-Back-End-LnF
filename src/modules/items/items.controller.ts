@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ItemService } from './items.service';
 import { createItemDTO } from './dto/create.item.dto';
 import { Item } from './Entities/items.entities';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('api/v1/item')
 export class ItemsController {
@@ -12,6 +20,11 @@ export class ItemsController {
     return this.itemService.addITem(dto);
   }
 
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    return this.itemService.uploadImage(file);
+  }
   @Get()
   getItem(): Promise<object> {
     return this.itemService.getItem();

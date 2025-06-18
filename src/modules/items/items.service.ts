@@ -23,6 +23,13 @@ export class ItemService {
     }
   }
 
+  async uploadImage(file: Express.Multer.File): Promise<string> {
+    try {
+      return file.path;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
   async getItem(): Promise<object> {
     try {
       const items = await this.items.find();

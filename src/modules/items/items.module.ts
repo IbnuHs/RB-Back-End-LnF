@@ -5,12 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Item } from './Entities/items.entities';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { join } from 'path';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Item]),
     MulterModule.register({
-      storage: diskStorage({}),
+      storage: diskStorage({
+        destination: join(process.cwd(), 'images'),
+        filename: (req, file, cb) => {
+          const filename = `${Date.now()}-${file.originalname}`;
+          cb(null, filename);
+        },
+      }),
     }),
   ],
   providers: [ItemService],
