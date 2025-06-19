@@ -16,8 +16,12 @@ export class ItemsController {
   constructor(private readonly itemService: ItemService) {}
 
   @Post()
-  addItem(@Body() dto: createItemDTO): Promise<object> {
-    return this.itemService.addITem(dto);
+  @UseInterceptors(FileInterceptor('file'))
+  addItem(
+    @Body() dto: createItemDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<object> {
+    return this.itemService.addITem(dto, file);
   }
 
   @Post('upload')

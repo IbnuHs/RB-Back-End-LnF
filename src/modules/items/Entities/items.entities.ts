@@ -27,7 +27,7 @@ export enum JenisLaporan {
 
 @Entity('items')
 export class Item {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: String;
 
   @Column()
@@ -36,7 +36,7 @@ export class Item {
   @Column({
     type: 'text',
   })
-  urlImage: string;
+  urlImage: String;
 
   @Column()
   itemDescription: String;
