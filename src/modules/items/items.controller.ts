@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -32,5 +34,10 @@ export class ItemsController {
   @Get()
   getItem(): Promise<object> {
     return this.itemService.getItem();
+  }
+
+  @Delete(':id')
+  deleteItem(@Param('id') id: string): Promise<object> {
+    return this.itemService.deleteItem(id);
   }
 }

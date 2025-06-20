@@ -36,7 +36,7 @@ export class Item {
   @Column({
     type: 'text',
   })
-  urlImage: String;
+  urlImage: string;
 
   @Column()
   itemDescription: String;

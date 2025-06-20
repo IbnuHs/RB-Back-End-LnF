@@ -75,20 +75,24 @@ export class ItemService {
   async editItem() {}
 
   async deleteItem(id: string): Promise<object> {
-    // const query = this.dataSource.createQueryRunner()
-    // await query.connect()
-    // await query.startTransaction()
+    const query = this.dataSource.createQueryRunner();
+    await query.connect();
+    await query.startTransaction();
     try {
-      const item = await this.items.findOne({ where: { id } });
+      const item = await query.manager.findOne(Item, { where: { id } });
       if (!item) throw new BadRequestException('Id Tidak Valid');
       const fs = await import('fs/promises');
-      // if(item.urlImage){
-      //   await fs.unlink(item.).catch(() => null)
-      // }
-      await this.items.delete(item);
+      await query.manager.delete(Item, id);
+      if (item.urlImage) {
+        await fs.unlink(item.urlImage).catch(() => null);
+      }
       return {
         message: 'Item Berhasil Dihapus',
       };
-    } catch (error) {}
+    } catch (error) {
+      await query.rollbackTransaction();
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException(error.message);
+    }
   }
 }
