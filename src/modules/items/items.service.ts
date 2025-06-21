@@ -79,7 +79,7 @@ export class ItemService {
     await query.connect();
     await query.startTransaction();
     try {
-      const item = await query.manager.findOne(Item, { where: { id } });
+      const item = await query.manager.findOne(Item, { where: { id: id } });
       if (!item) throw new BadRequestException('Id Tidak Valid');
       const fs = await import('fs/promises');
       await query.manager.delete(Item, id);

@@ -6,18 +6,21 @@ import {
   Param,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ItemService } from './items.service';
 import { createItemDTO } from './dto/create.item.dto';
 import { Item } from './Entities/items.entities';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('api/v1/item')
 export class ItemsController {
   constructor(private readonly itemService: ItemService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   addItem(
     @Body() dto: createItemDTO,
@@ -26,12 +29,8 @@ export class ItemsController {
     return this.itemService.addITem(dto, file);
   }
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    return this.itemService.uploadImage(file);
-  }
   @Get()
+  @UseGuards(AuthGuard)
   getItem(): Promise<object> {
     return this.itemService.getItem();
   }
