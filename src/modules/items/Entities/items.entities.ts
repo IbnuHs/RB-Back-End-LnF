@@ -1,11 +1,14 @@
+import { timestamp } from 'rxjs';
 import { Categories } from 'src/modules/category/entities/category.entitites';
 import { Location } from 'src/modules/location/entitites/location.entities';
+import { OwnerItems } from 'src/modules/owner/owner.entities';
 import { User } from 'src/modules/user/entitities/user.entities';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -61,6 +64,12 @@ export class Item {
   })
   jenisLaporan: JenisLaporan;
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createAt: Date;
+
+  @Column({ type: 'timestamp' })
+  updatedAt: Date;
+
   @ManyToOne(() => Categories, (category) => category.id)
   @JoinColumn({ name: 'categoryId' })
   category: Categories;
@@ -72,4 +81,7 @@ export class Item {
   @ManyToOne(() => Location, (location) => location.id)
   @JoinColumn({ name: 'locationId' })
   location: Location;
+
+  @OneToOne(() => OwnerItems, (owner) => owner.item)
+  owner: OwnerItems;
 }

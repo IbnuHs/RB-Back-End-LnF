@@ -72,7 +72,24 @@ export class ItemService {
     }
   }
 
-  async editItem() {}
+  async getItemDetail(id: string): Promise<object> {
+    try {
+      const items = await this.items.findOne({
+        where: { id },
+        relations: ['location', 'category'],
+      });
+      if (!items) throw new BadRequestException('Invalid Id');
+      return {
+        data: items,
+        status: 200,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async updateItem() {}
 
   async deleteItem(id: string): Promise<object> {
     const query = this.dataSource.createQueryRunner();
@@ -83,6 +100,7 @@ export class ItemService {
       if (!item) throw new BadRequestException('Id Tidak Valid');
       const fs = await import('fs/promises');
       await query.manager.delete(Item, id);
+      await query.commitTransaction();
       if (item.urlImage) {
         await fs.unlink(item.urlImage).catch(() => null);
       }

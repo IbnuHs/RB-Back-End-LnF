@@ -12,6 +12,9 @@ export class registerDTO {
   @IsEmail()
   email: string;
 
+  @IsNotEmpty()
+  name: string;
+
   @IsString()
   @IsNotEmpty()
   @MinLength(8)

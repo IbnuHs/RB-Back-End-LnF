@@ -35,7 +35,14 @@ export class ItemsController {
     return this.itemService.getItem();
   }
 
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  getDetailITems(@Param('id') id: string): Promise<object> {
+    return this.itemService.getItemDetail(id);
+  }
+
   @Delete(':id')
+  @UseGuards(AuthGuard)
   deleteItem(@Param('id') id: string): Promise<object> {
     return this.itemService.deleteItem(id);
   }

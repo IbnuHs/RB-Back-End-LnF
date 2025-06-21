@@ -6,10 +6,11 @@ import { Item } from './Entities/items.entities';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
+import { OwnerItems } from '../owner/owner.entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Item]),
+    TypeOrmModule.forFeature([Item, OwnerItems]),
     MulterModule.register({
       storage: diskStorage({
         destination: join(process.cwd(), 'images'),
