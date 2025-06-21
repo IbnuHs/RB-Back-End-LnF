@@ -1,5 +1,9 @@
 import { DataSource, Repository } from 'typeorm';
-import { Item, StatusPengajuan } from './Entities/items.entities';
+import {
+  Item,
+  StatusLaporan,
+  StatusPengajuan,
+} from './Entities/items.entities';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { createItemDTO } from './dto/create.item.dto';
 import {
@@ -127,6 +131,25 @@ export class ItemService {
       await this.items.save(items);
       return {
         message: 'Berhasil Mengupdate Status Pengajuan',
+        status: 204,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async updateStatusLaporan(
+    id: string,
+    body: { status: StatusLaporan },
+  ): Promise<object> {
+    try {
+      const items = await this.items.findOne({ where: { id } });
+      if (!items) throw new NotFoundException('Invalid id');
+      items.statusLaporan = body.status;
+      await this.items.save(items);
+      return {
+        message: 'Berhasil Mengupdate Status Laporan',
         status: 204,
       };
     } catch (error) {

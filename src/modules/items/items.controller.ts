@@ -12,7 +12,11 @@ import {
 } from '@nestjs/common';
 import { ItemService } from './items.service';
 import { createItemDTO } from './dto/create.item.dto';
-import { Item, StatusPengajuan } from './Entities/items.entities';
+import {
+  Item,
+  StatusLaporan,
+  StatusPengajuan,
+} from './Entities/items.entities';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateItemDTO } from './dto/update.item.dto';
@@ -57,8 +61,15 @@ export class ItemsController {
     @Param('id') id: string,
     @Body() status: { status: StatusPengajuan },
   ) {
-    // console.log(status);
     return this.itemService.updateStatusPengajuan(id, status);
+  }
+
+  @Patch(':id/status')
+  updateStatusLaporan(
+    @Param('id') id: string,
+    @Body() body: { status: StatusLaporan },
+  ) {
+    return this.itemService.updateStatusLaporan(id, body);
   }
 
   @Delete(':id')
