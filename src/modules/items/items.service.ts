@@ -1,14 +1,17 @@
 import { DataSource, Repository } from 'typeorm';
-import { Item } from './Entities/items.entities';
+import { Item, StatusPengajuan } from './Entities/items.entities';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { createItemDTO } from './dto/create.item.dto';
 import {
   BadRequestException,
+  ForbiddenException,
   HttpException,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import path from 'path';
-import { error } from 'console';
+import { Console, error } from 'console';
+import { UpdateItemDTO } from './dto/update.item.dto';
 
 export class ItemService {
   constructor(
@@ -76,7 +79,7 @@ export class ItemService {
     try {
       const items = await this.items.findOne({
         where: { id },
-        relations: ['location', 'category'],
+        relations: ['location', 'category', 'owner'],
       });
       if (!items) throw new BadRequestException('Invalid Id');
       return {
@@ -89,7 +92,48 @@ export class ItemService {
     }
   }
 
-  async updateItem() {}
+  async updateItem(id: string, dto: UpdateItemDTO): Promise<object> {
+    try {
+      const items = await this.items.findOne({
+        where: { id },
+      });
+      if (!items) throw new NotFoundException('Invalid id');
+      items.itemName = dto.itemName;
+      items.category = dto.category;
+      items.itemDescription = dto.description;
+      items.location = dto.location;
+      items.jenisLaporan = dto.jenisLaporan;
+      items.updatedAt = new Date();
+
+      await this.items.save(items);
+      return {
+        message: 'Item Berhasil di Update',
+        status: 204,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async updateStatusPengajuan(
+    id: string,
+    status: { status: StatusPengajuan },
+  ): Promise<object> {
+    try {
+      const items = await this.items.findOne({ where: { id } });
+      if (!items) throw new NotFoundException('Invalid Id');
+      items.statusPengajuan = status.status;
+      await this.items.save(items);
+      return {
+        message: 'Berhasil Mengupdate Status Pengajuan',
+        status: 204,
+      };
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException(error.message);
+    }
+  }
 
   async deleteItem(id: string): Promise<object> {
     const query = this.dataSource.createQueryRunner();
@@ -97,7 +141,7 @@ export class ItemService {
     await query.startTransaction();
     try {
       const item = await query.manager.findOne(Item, { where: { id: id } });
-      if (!item) throw new BadRequestException('Id Tidak Valid');
+      if (!item) throw new NotFoundException('Id Tidak Valid');
       const fs = await import('fs/promises');
       await query.manager.delete(Item, id);
       await query.commitTransaction();

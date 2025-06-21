@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UploadedFile,
   UseGuards,
@@ -11,9 +12,10 @@ import {
 } from '@nestjs/common';
 import { ItemService } from './items.service';
 import { createItemDTO } from './dto/create.item.dto';
-import { Item } from './Entities/items.entities';
+import { Item, StatusPengajuan } from './Entities/items.entities';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../auth/auth.guard';
+import { UpdateItemDTO } from './dto/update.item.dto';
 
 @Controller('api/v1/item')
 export class ItemsController {
@@ -39,6 +41,24 @@ export class ItemsController {
   @UseGuards(AuthGuard)
   getDetailITems(@Param('id') id: string): Promise<object> {
     return this.itemService.getItemDetail(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(AuthGuard)
+  updateItem(
+    @Param('id') id: string,
+    @Body() dto: UpdateItemDTO,
+  ): Promise<object> {
+    return this.itemService.updateItem(id, dto);
+  }
+
+  @Patch(':id/pengajuan')
+  updateStatusPengajuan(
+    @Param('id') id: string,
+    @Body() status: { status: StatusPengajuan },
+  ) {
+    // console.log(status);
+    return this.itemService.updateStatusPengajuan(id, status);
   }
 
   @Delete(':id')

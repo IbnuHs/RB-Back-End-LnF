@@ -1,8 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 import { JenisLaporan } from '../Entities/items.entities';
 import { Categories } from 'src/modules/category/entities/category.entitites';
+import { Location } from 'src/modules/location/entitites/location.entities';
 
-export class UpdateItem {
+export class UpdateItemDTO {
   @IsNotEmpty()
   itemName: String;
 
@@ -10,7 +11,10 @@ export class UpdateItem {
   description: String;
 
   @IsNotEmpty()
-  caetegory: Categories;
+  category: Categories;
+
+  @IsNotEmpty()
+  location: Location;
 
   @IsNotEmpty()
   jenisLaporan: JenisLaporan;
