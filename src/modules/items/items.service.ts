@@ -8,19 +8,24 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { createItemDTO } from './dto/create.item.dto';
 import {
   BadRequestException,
-  ForbiddenException,
   HttpException,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
-import path from 'path';
-import { Console, error } from 'console';
 import { UpdateItemDTO } from './dto/update.item.dto';
+import { OwnerItems } from '../owner/owner.entities';
+import { UpdateStatusLaporanDTO } from './dto/update.status.laporan';
+import { User } from '../user/entitities/user.entities';
 
 export class ItemService {
   constructor(
+    @InjectRepository(User)
+    private readonly user: Repository<User>,
     @InjectRepository(Item)
     private readonly items: Repository<Item>,
+    @InjectRepository(OwnerItems)
+    private readonly owner: Repository<OwnerItems>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
@@ -28,19 +33,24 @@ export class ItemService {
   async addITem(
     dto: createItemDTO,
     file: Express.Multer.File,
+    userId: any,
   ): Promise<object> {
     const query = this.dataSource.createQueryRunner();
     await query.connect();
     await query.startTransaction();
+    // console.log(userId);
     try {
+      const user = await query.manager.findOne(User, { where: { id: userId } });
+
+      if (!user) throw new UnauthorizedException('Invalid User');
       if (!file) throw new BadRequestException('No file Uploaded');
       const allowedMimeTypes = ['image/jpeg', 'image/png'];
       if (!allowedMimeTypes.includes(file.mimetype)) {
         throw new BadRequestException('Invalid File Type');
       }
       const item = this.items.create(dto);
+      item.user = user;
       item.urlImage = file.path;
-      await this.items.save(item);
       await query.manager.save(item);
       await query.commitTransaction();
       return {
@@ -96,8 +106,14 @@ export class ItemService {
     }
   }
 
-  async updateItem(id: string, dto: UpdateItemDTO): Promise<object> {
+  async updateItem(
+    id: string,
+    dto: UpdateItemDTO,
+    userId: string,
+  ): Promise<object> {
     try {
+      const user = await this.user.findOne({ where: { id: userId } });
+      if (!user) throw new UnauthorizedException('Invalid User');
       const items = await this.items.findOne({
         where: { id },
       });
@@ -141,12 +157,15 @@ export class ItemService {
 
   async updateStatusLaporan(
     id: string,
-    body: { status: StatusLaporan },
+    dto: UpdateStatusLaporanDTO,
   ): Promise<object> {
     try {
       const items = await this.items.findOne({ where: { id } });
       if (!items) throw new NotFoundException('Invalid id');
-      items.statusLaporan = body.status;
+      console.log(dto.name);
+      items.statusLaporan = dto.status;
+      items.owner.name = dto.name;
+      items.owner.dateClaim = new Date();
       await this.items.save(items);
       return {
         message: 'Berhasil Mengupdate Status Laporan',

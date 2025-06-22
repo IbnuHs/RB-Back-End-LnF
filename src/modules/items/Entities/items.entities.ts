@@ -67,7 +67,7 @@ export class Item {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createAt: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
   @ManyToOne(() => Categories, (category) => category.id)
